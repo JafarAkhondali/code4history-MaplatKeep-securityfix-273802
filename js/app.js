@@ -705,6 +705,14 @@ define(['histmap', 'sprintf', 'i18n', 'i18nxhr', 'swiper', 'bootstrap'],
                     app.cacheHash[source.sourceID] = source;
                 }
                 if (!noUI) {
+                    if (baseSwiper.slides.length - baseSwiper.loopedSlides * 2 == 1) {
+                        baseSwiper.params.loop = false;
+                        baseSwiper.loopDestroy();
+                    }
+                    if (overlaySwiper.slides.length - overlaySwiper.loopedSlides * 2 == 1) {
+                        overlaySwiper.params.loop = false;
+                        overlaySwiper.loopDestroy();
+                    }
                     baseSwiper.on;
                     overlaySwiper.on;
                     baseSwiper.slideToLoop(0);
