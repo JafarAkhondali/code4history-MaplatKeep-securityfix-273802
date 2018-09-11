@@ -292,48 +292,71 @@ define(['histmap'], function(ol) {
                     }, null);
                     app.changeMap(initial, app.initialRestore);
 
-                    var showInfo = function(data) {
-                        app.dispatchEvent(new CustomEvent('clickMarker', data));
-                    };
-
-                    var clickHandler = function(evt) {
+                    var clickHandler = function(evt, longClick) {
                         app.logger.debug(evt.pixel);
-                        var feature = this.forEachFeatureAtPixel(evt.pixel,
+                        var eventPrefix = longClick ? 'longClick' : 'click';
+
+                        var feature = app.mapObject.forEachFeatureAtPixel(evt.pixel,
                             function(feature) {
                                 app.logger.debug(evt.pixel);
                                 if (feature.get('datum')) return feature;
                             });
                         if (feature) {
-                            showInfo(feature.get('datum'));
+                            app.dispatchEvent(new CustomEvent(eventPrefix + 'Marker', feature.get('datum')));
                         } else {
                             var xy = evt.coordinate;
                             app.from.xy2MercAsync(xy).then(function(merc) {
                                 var lnglat = ol.proj.transform(merc, 'EPSG:3857', 'EPSG:4326');
-                                app.dispatchEvent(new CustomEvent('clickMap', {
+                                app.dispatchEvent(new CustomEvent(eventPrefix + 'Map', {
                                     longitude: lnglat[0],
                                     latitude: lnglat[1]
                                 }));
                             });
                         }
                     };
-                    app.mapObject.on('click', clickHandler);
 
                     // MapUI on off
-                    var timer;
-                    app.mapObject.on('click', function() {
-                        if (timer) {
-                            clearTimeout(timer);
-                            delete timer;
+                    var fadeTimer;
+                    var holdTimer;
+                    var holdFlag = false;
+                    app.mapObject.on('click', function(evt) {
+                        if (fadeTimer) {
+                            clearTimeout(fadeTimer);
+                            delete fadeTimer;
                         }
-                        var ctls = app.mapDivDocument.querySelectorAll('.ol-control');
-                        for (var i = 0; i < ctls.length; i++) {
-                            ctls[i].classList.remove('fade');
+                        if (holdTimer) {
+                            clearTimeout(holdTimer);
+                            delete holdTimer;
+                        }
+                        clickHandler(evt, holdFlag);
+                        if (!holdFlag) {
+                            var ctls = app.mapDivDocument.querySelectorAll('.ol-control');
+                            for (var i = 0; i < ctls.length; i++) {
+                                ctls[i].classList.remove('fade');
+                            }
+                        }
+                    });
+                    app.mapObject.on('pointerdown', function () {
+                        if (holdTimer) {
+                            clearTimeout(holdTimer);
+                            delete holdTimer;
+                        }
+                        holdFlag = false;
+                        holdTimer = setTimeout(function() {
+                            delete holdTimer;
+                            holdFlag = true;
+                        }, 500);
+                    });
+                    app.mapObject.on('pointerup', function () {
+                        if (holdTimer) {
+                            clearTimeout(holdTimer);
+                            delete holdTimer;
                         }
                     });
                     app.mapObject.on('pointerdrag', function() {
-                        if (timer) {
-                            clearTimeout(timer);
-                            delete timer;
+                        if (fadeTimer) {
+                            clearTimeout(fadeTimer);
+                            delete fadeTimer;
                         }
                         var ctls = app.mapDivDocument.querySelectorAll('.ol-control');
                         for (var i = 0; i < ctls.length; i++) {
@@ -341,12 +364,12 @@ define(['histmap'], function(ol) {
                         }
                     });
                     app.mapObject.on('moveend', function() {
-                        if (timer) {
-                            clearTimeout(timer);
-                            delete timer;
+                        if (fadeTimer) {
+                            clearTimeout(fadeTimer);
+                            delete fadeTimer;
                         }
-                        timer = setTimeout(function() {
-                            delete timer;
+                        fadeTimer = setTimeout(function() {
+                            delete fadeTimer;
                             var ctls = app.mapDivDocument.querySelectorAll('.ol-control');
                             for (var i = 0; i < ctls.length; i++) {
                                 ctls[i].classList.remove('fade');

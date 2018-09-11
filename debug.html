@@ -41,16 +41,21 @@
     Maplat.createObject(option).then(function(app) {
         /*app.core.addEventListener('clickMarker', function (evt) {
             console.log(evt);
-        });
-        app.core.addEventListener('clickMap', function (evt) {
-            console.log(evt);
         });*/
-        app.core.addEventListener('changeViewpoint', function (evt) {
+        app.core.addEventListener('clickMap', function (evt) {
+            console.log('##### Short Click #####');
+            console.log(evt);
+        });
+        app.core.addEventListener('longClickMap', function (evt) {
+            console.log('##### Long Click #####');
+            console.log(evt);
+        });
+        /*app.core.addEventListener('changeViewpoint', function (evt) {
             console.log(evt);
         });
         app.core.addEventListener('updateState', function (evt) {
             console.log(evt);
-        });
+        });*/
         app.core.addLine({
             lnglats: [[141.151995, 39.701599], [141.151137, 39.703736], [141.1521671, 39.7090232]],
             stroke: {

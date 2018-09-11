@@ -643,21 +643,6 @@ define(['ol3', 'turf'], function(ol, turf) {
         self.on('moveend', function() {
             view.on('propertychange', movestart);
         });
-
-        var longpress = false;
-        self.on("click",function(e){
-            (longpress) ? alert("Long Press") : alert("Short Press");
-            console.log(e);//self.getEventCoordinate(e.pixel));
-        });
-        var startTime, endTime;
-        self.on('pointerdown', function () {
-            startTime = new Date().getTime();
-        });
-        self.on('pointerup', function () {
-            endTime = new Date().getTime();
-            console.log(endTime - startTime);
-            longpress = (endTime - startTime < 500) ? false : true;
-        });
     };
     ol.inherits(ol.MaplatMap, ol.Map);
 
