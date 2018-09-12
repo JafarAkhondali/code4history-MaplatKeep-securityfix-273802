@@ -465,62 +465,15 @@ define(['ol-custom', 'resize'], function(ol, addResizeListener) {
     };
     ol.inherits(ol.control.GoHome, ol.control.CustomControl);
 
-    ol.control.Share = function(optOptions) {
+    ol.control.EtcControl = function(optOptions) {
         var options = optOptions || {};
-        options.character = '<i class="fa fa-share-alt-square fa-lg"></i>';
-        options.cls = 'ol-share';
-        var self = this;
-        options.callback = function() {
-            var map = self.getMap();
-            map.dispatchEvent(new ol.MapEvent('click_control', map, {control: 'share'}));
-        };
+        if (options.fa) options.character = '<i class="fa fa-' + options.fa + ' fa-lg"></i>';
 
         ol.control.CustomControl.call(this, options);
+
+        if (options.initializer) options.initializer();
     };
-    ol.inherits(ol.control.Share, ol.control.CustomControl);
-
-    ol.control.Border = function(optOptions) {
-        var options = optOptions || {};
-        options.character = '<i class="fa fa-clone fa-lg"></i>';
-        options.cls = 'ol-border';
-        var self = this;
-        options.callback = function() {
-            var map = self.getMap();
-            map.dispatchEvent(new ol.MapEvent('click_control', map, {control: 'border'}));
-        };
-
-        ol.control.CustomControl.call(this, options);
-    };
-    ol.inherits(ol.control.Border, ol.control.CustomControl);
-
-    ol.control.Maplat = function(optOptions) {
-        var options = optOptions || {};
-        options.character = '<i class="fa fa-question-circle fa-lg"></i>';
-        options.cls = 'ol-maplat';
-        var self = this;
-        options.callback = function() {
-            // window.open('https://github.com/code4nara/Maplat/wiki');
-            var map = self.getMap();
-            map.dispatchEvent(new ol.MapEvent('click_control', map, {control: 'help'}));
-        };
-
-        ol.control.CustomControl.call(this, options);
-    };
-    ol.inherits(ol.control.Maplat, ol.control.CustomControl);
-
-    ol.control.Copyright = function(optOptions) {
-        var options = optOptions || {};
-        options.character = '<i class="fa fa-info-circle fa-lg"></i>';
-        options.cls = 'ol-copyright';
-        var self = this;
-        options.callback = function() {
-            var map = self.getMap();
-            map.dispatchEvent(new ol.MapEvent('click_control', map, {control: 'copyright'}));
-        };
-
-        ol.control.CustomControl.call(this, options);
-    };
-    ol.inherits(ol.control.Copyright, ol.control.CustomControl);
+    ol.inherits(ol.control.EtcControl, ol.control.CustomControl);
 
     return ol;
 });

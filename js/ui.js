@@ -430,6 +430,24 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
         };
         xhr.send();
 
+        var handleDataI18n;
+        var putTileCacheSize = function(size) {
+            var unit = 'Bytes';
+            if (size > 1024) {
+                size = Math.round(size * 10 / 1024) / 10;
+                unit = 'KBytes';
+            }
+            if (size > 1024) {
+                size = Math.round(size * 10 / 1024) / 10;
+                unit = 'MBytes';
+            }
+            if (size > 1024) {
+                size = Math.round(size * 10 / 1024) / 10;
+                unit = 'GBytes';
+            }
+            ui.core.mapDivDocument.querySelector('#cache_size').innerHTML = size + ' ' + unit;
+        };
+
         ui.core.addEventListener('uiPrepare', function(evt) {
             if (!lang && ui.core.appData.lang) {
                 lang = ui.core.appData.lang;
@@ -443,18 +461,21 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                         loadPath: 'locales/{{lng}}/{{ns}}.json'
                     }
                 }, function(err, t) {
-                    var i18nTargets = ui.core.mapDivDocument.querySelectorAll('[data-i18n]');
-                    for (var i=0; i<i18nTargets.length; i++) {
-                        var target = i18nTargets[i];
-                        var key = target.getAttribute('data-i18n');
-                        target.innerText = t(key);
-                    }
-                    var i18nTargets = ui.core.mapDivDocument.querySelectorAll('[data-i18n-html]');
-                    for (var i=0; i<i18nTargets.length; i++) {
-                        var target = i18nTargets[i];
-                        var key = target.getAttribute('data-i18n-html');
-                        target.innerHTML = t(key);
-                    }
+                    handleDataI18n = function(dom) {
+                        ['data-i18n', 'data-i18n-html'].map(function(className) {
+                            var i18nTargets = dom.querySelectorAll('[' + className + ']');
+                            for (var i=0; i<i18nTargets.length; i++) {
+                                var target = i18nTargets[i];
+                                var key = target.getAttribute(className);
+                                if (className == 'data-i18n') {
+                                    target.innerText = t(key);
+                                } else {
+                                    target.innerHTML = t(key);
+                                }
+                            }
+                        });
+                    };
+                    handleDataI18n(ui.core.mapDivDocument);
                     resolve([t, i18n]);
                 });
             });
@@ -468,18 +489,131 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                     options.initialValue = restoreTransparency / 100;
                 }
                 ui.sliderCommon = new ol.control.SliderCommon(options);
+                // Copyright UI preparation
+                var copyright = new ol.control.EtcControl({
+                    tipLabel: ui.t('control.info', {ns: 'translation'}),
+                    fa: 'info-circle',
+                    cls: 'ol-copyright',
+                    callback: function() {
+                        var modalElm = ui.core.mapDivDocument.querySelector('#modalBase');
+                        var modal = new bsn.Modal(modalElm, {'root': ui.core.mapDivDocument});
+                        var from = ui.core.getMapMeta();
+
+                        if (!ol.source.META_KEYS.reduce(function(prev, curr) {
+                            if (curr == 'title') return prev;
+                            return from[curr] || prev;
+                        }, false)) return;
+
+                        ui.core.mapDivDocument.querySelector('#modal_title').innerText = ui.translate(from.officialTitle || from.title);
+                        ol.source.META_KEYS.map(function(key) {
+                            if (key == 'title' || key == 'officialTitle') return;
+                            if (!from[key] || from[key] == '') {
+                                ui.core.mapDivDocument.querySelector('#' + key + '_div').classList.add('hide');
+                            } else {
+                                ui.core.mapDivDocument.querySelector('#' + key + '_div').classList.remove('hide');
+                                ui.core.mapDivDocument.querySelector('#' + key).innerHTML =
+                                    (key == 'license' || key == 'dataLicense') ?
+                                        '<img src="parts/' + from[key].toLowerCase().replace(/ /g, '_') + '.png">' :
+                                        ui.translate(from[key]);
+                            }
+                        });
+
+                        ui.core.getMapTileCacheSizeAsync(from.sourceID).then(putTileCacheSize);
+
+                        modalSetting('map');
+                        modal.show();
+                    }
+                });
+                // Maplat Help UI preparation
+                var maplat = new ol.control.EtcControl({
+                    tipLabel: ui.t('control.help', {ns: 'translation'}),
+                    fa: 'question-circle',
+                    cls: 'ol-maplat',
+                    callback: function() {
+                        var modalElm = ui.core.mapDivDocument.querySelector('#modalBase');
+                        var modal = new bsn.Modal(modalElm, {'root': ui.core.mapDivDocument});
+                        modalSetting('help');
+                        modal.show();
+                    }
+                });
+                // Share UI preparation
+                var share;
+                if (ui.shareEnable) {
+                    var qrApp;
+                    var qrView;
+                    share = new ol.control.EtcControl({
+                        tipLabel: ui.t('control.share', {ns: 'translation'}),
+                        fa: 'share-alt-square',
+                        cls: 'ol-share',
+                        callback: function() {
+                            var modalElm = ui.core.mapDivDocument.querySelector('#modalBase');
+                            var modal = new bsn.Modal(modalElm, {'root': ui.core.mapDivDocument});
+                            modalSetting('share');
+
+                            var base = location.href;
+                            var div1 = base.split('#!');
+                            var path = div1.length > 1 ? (div1[1].split('?'))[0] : '';
+                            var div2 = div1[0].split('?');
+                            var uri = div2[0];
+                            var query = div2.length > 1 ? div2[1].split('&').filter(function(qs) {
+                                return (qs == 'pwa') ? false : true;
+                            }).join('&') : '';
+
+                            if (query) uri = uri + '?' + query;
+                            var view = uri;
+                            if (path) view = view + '#!' + path;
+                            if (!qrApp) {
+                                qrApp = new QRCode(document.getElementById('qr_app'), {
+                                    text: uri,
+                                    width: 128,
+                                    height: 128,
+                                    colorDark: '#000000',
+                                    colorLight: '#ffffff',
+                                    correctLevel: QRCode.CorrectLevel.H
+                                });
+                            } else {
+                                qrApp.makeCode(uri);
+                            }
+                            if (!qrView) {
+                                qrView = new QRCode(document.getElementById('qr_view'), {
+                                    text: view,
+                                    width: 128,
+                                    height: 128,
+                                    colorDark: '#000000',
+                                    colorLight: '#ffffff',
+                                    correctLevel: QRCode.CorrectLevel.H
+                                });
+                            } else {
+                                qrView.makeCode(view);
+                            }
+
+                            modal.show();
+                        }
+                    });
+                }
+                // Maplat Help UI preparation
+                var border = new ol.control.EtcControl({
+                    tipLabel: ui.t('control.border', {ns: 'translation'}),
+                    fa: 'clone',
+                    cls: 'ol-border',
+                    callback: function() {
+                        var flag = !ui.core.showBorder;
+                        ui.core.setShowBorder(flag);
+                    }
+                });
+
                 ui.core.appData.controls = [
-                    new ol.control.Copyright({tipLabel: ui.t('control.info', {ns: 'translation'})}),
+                    copyright,
                     new ol.control.CompassRotate({tipLabel: ui.t('control.compass', {ns: 'translation'})}),
                     new ol.control.Zoom({tipLabel: ui.t('control.zoom', {ns: 'translation'})}),
                     new ol.control.SetGPS({tipLabel: ui.t('control.gps', {ns: 'translation'})}),
                     new ol.control.GoHome({tipLabel: ui.t('control.home', {ns: 'translation'})}),
                     ui.sliderCommon,
-                    new ol.control.Maplat({tipLabel: ui.t('control.help', {ns: 'translation'})}),
-                    new ol.control.Border({tipLabel: ui.t('control.border', {ns: 'translation'})})
+                    maplat,
+                    border
                 ];
-                if (ui.shareEnable) {
-                    ui.core.appData.controls.push(new ol.control.Share({tipLabel: ui.t('control.share', {ns: 'translation'})}));
+                if (share) {
+                    ui.core.appData.controls.push(share);
                 }
                 if (ui.core.mapObject) {
                     ui.core.appData.controls.map(function(control) {
@@ -509,8 +643,8 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                     modal.show();
 
                     var fadeTime = splash ? 1000 : 200;
-                    ui.splashPromise = new Promise(function (resolve) {
-                        setTimeout(function () {
+                    ui.splashPromise = new Promise(function(resolve) {
+                        setTimeout(function() {
                             resolve();
                         }, fadeTime);
                     });
@@ -568,7 +702,7 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
             var sources = evt.detail;
 
             if (ui.splashPromise) {
-                ui.splashPromise.then(function () {
+                ui.splashPromise.then(function() {
                     var modalElm = ui.core.mapDivDocument.querySelector('#modalBase');
                     var modal = new bsn.Modal(modalElm, {'root': ui.core.mapDivDocument});
                     modalSetting('load');
@@ -728,22 +862,6 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                     showGPSresult(evt.frameState);
                 }
             });
-            var putTileCacheSize = function(size) {
-                var unit = 'Bytes';
-                if (size > 1024) {
-                    size = Math.round(size * 10 / 1024) / 10;
-                    unit = 'KBytes';
-                }
-                if (size > 1024) {
-                    size = Math.round(size * 10 / 1024) / 10;
-                    unit = 'MBytes';
-                }
-                if (size > 1024) {
-                    size = Math.round(size * 10 / 1024) / 10;
-                    unit = 'GBytes';
-                }
-                ui.core.mapDivDocument.querySelector('#cache_size').innerHTML = size + ' ' + unit;
-            };
 
             document.querySelector('#cache_delete').addEventListener('click', function(evt) {
                 evt.preventDefault();
@@ -753,87 +871,6 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                 });
             });
 
-            var qr_app;
-            var qr_view;
-            ui.core.mapObject.on('click_control', function(evt) {
-                var control = evt.frameState.control;
-                var modalElm = ui.core.mapDivDocument.querySelector('#modalBase');
-                var modal = new bsn.Modal(modalElm, {'root': ui.core.mapDivDocument});
-                if (control == 'copyright') {
-                    var from = ui.core.getMapMeta();
-
-                    if (!ol.source.META_KEYS.reduce(function(prev, curr) {
-                        if (curr == 'title') return prev;
-                        return from[curr] || prev;
-                    }, false)) return;
-
-                    ui.core.mapDivDocument.querySelector('#modal_title').innerText = ui.translate(from.officialTitle || from.title);
-                    ol.source.META_KEYS.map(function(key) {
-                        if (key == 'title' || key == 'officialTitle') return;
-                        if (!from[key] || from[key] == '') {
-                            ui.core.mapDivDocument.querySelector('#' + key + '_div').classList.add('hide');
-                        } else {
-                            ui.core.mapDivDocument.querySelector('#' + key + '_div').classList.remove('hide');
-                            ui.core.mapDivDocument.querySelector('#' + key).innerHTML =
-                                (key == 'license' || key == 'dataLicense') ?
-                                    '<img src="parts/' + from[key].toLowerCase().replace(/ /g, '_') + '.png">' :
-                                    ui.translate(from[key]);
-                        }
-                    });
-
-                    ui.core.getMapTileCacheSizeAsync(from.sourceID).then(putTileCacheSize);
-
-                    modalSetting('map');
-                    modal.show();
-                } else if (control == 'help') {
-                    modalSetting('help');
-                    modal.show();
-                } else if (control == 'share') {
-                    modalSetting('share');
-
-                    var base = location.href;
-                    var div1 = base.split('#!');
-                    var path = div1.length > 1 ? (div1[1].split('?'))[0] : '';
-                    var div2 = div1[0].split('?');
-                    var uri = div2[0];
-                    var query = div2.length > 1 ? div2[1].split('&').filter(function(qs) {
-                        return (qs == 'pwa') ? false : true;
-                    }).join('&') : '';
-
-                    if (query) uri = uri + '?' + query;
-                    var view = uri;
-                    if (path) view = view + '#!' + path;
-                    if (!qr_app) {
-                        qr_app = new QRCode(document.getElementById('qr_app'), {
-                            text: uri,
-                            width: 128,
-                            height: 128,
-                            colorDark: '#000000',
-                            colorLight: '#ffffff',
-                            correctLevel: QRCode.CorrectLevel.H
-                        });
-                    } else {
-                        qr_app.makeCode(uri);
-                    }
-                    if (!qr_view) {
-                        qr_view = new QRCode(document.getElementById('qr_view'), {
-                            text: view,
-                            width: 128,
-                            height: 128,
-                            colorDark: '#000000',
-                            colorLight: '#ffffff',
-                            correctLevel: QRCode.CorrectLevel.H
-                        });
-                    } else {
-                        qr_view.makeCode(view);
-                    }
-
-                    modal.show();
-                } else if (control == 'border') {
-                    var flag = !ui.core.showBorder;
-                    ui.core.setShowBorder(flag);
-                }
-            });
             if (fakeGps) {
                 var newElem = Core.createElement(sprintf(ui.t('app.fake_explanation'), ui.translate(fakeCenter), fakeRadius))[0];
                 var elem = ui.core.mapDivDocument.querySelector('#modal_gpsW_content');
