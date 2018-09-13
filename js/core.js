@@ -41,7 +41,7 @@ define(['histmap'], function(ol) {
         }
     };
 
-    var createElement = function(domStr) {
+    var createElement = function(domStr, translator) {
         var context = document,
             fragment = context.createDocumentFragment(),
             nodes = [],
@@ -50,6 +50,8 @@ define(['histmap'], function(ol) {
         // ダミーのDIV要素を作成して中にテキストを挿入
         tmp = fragment.appendChild( context.createElement('div'));
         tmp.innerHTML = domStr;
+
+        if (translator) translator(tmp);
 
         for (; i < tmp.childNodes.length; i++) {
             // ダミーのDIV要素からHTML要素としてchildNodesで取り出せる
