@@ -338,7 +338,7 @@ define(['histmap'], function(ol) {
                             }
                         }
                     });
-                    app.mapObject.on('pointerdown', function () {
+                    app.mapObject.on('pointerdown', function() {
                         if (holdTimer) {
                             clearTimeout(holdTimer);
                             delete holdTimer;
@@ -349,7 +349,7 @@ define(['histmap'], function(ol) {
                             holdFlag = true;
                         }, 500);
                     });
-                    app.mapObject.on('pointerup', function () {
+                    app.mapObject.on('pointerup', function() {
                         if (holdTimer) {
                             clearTimeout(holdTimer);
                             delete holdTimer;
@@ -359,6 +359,10 @@ define(['histmap'], function(ol) {
                         if (fadeTimer) {
                             clearTimeout(fadeTimer);
                             delete fadeTimer;
+                        }
+                        if (holdTimer) {
+                            clearTimeout(holdTimer);
+                            delete holdTimer;
                         }
                         var ctls = app.mapDivDocument.querySelectorAll('.ol-control');
                         for (var i = 0; i < ctls.length; i++) {
