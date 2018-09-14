@@ -237,37 +237,10 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
             '<span id="modal_title"></span>' +
             '<span id="modal_load_title"></span>' +
             '<span id="modal_gpsW_title" data-i18n="html.acquiring_gps"></span>' +
-            '<span id="modal_help_title" data-i18n="html.help_title"></span>' +
-            '<span id="modal_share_title" data-i18n="html.share_title"></span>' +
 
             '</h4>' +
             '</div>' +
             '<div class="modal-body">' +
-
-            '<div id="modal_help_content">' +
-            '<div id="help_content">' +
-            '<span data-i18n-html="html.help_using_maplat"></span>' +
-            '<p class="col-xs-12 help_img"><img src="parts/fullscreen.png"></p>' +
-            '<h4 data-i18n="html.help_operation_title"></h4>' +
-            '<p data-i18n-html="html.help_operation_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_selection_title"></h4>' +
-            '<p data-i18n-html="html.help_selection_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_gps_title"></h4>' +
-            '<p data-i18n-html="html.help_gps_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_poi_title"></h4>' +
-            '<p data-i18n-html="html.help_poi_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_etc_title"></h4>' +
-            '<ul>' +
-            '<li data-i18n-html="html.help_etc_attr" class="recipient"></li>' +
-            '<li data-i18n-html="html.help_etc_help" class="recipient"></li>' +
-            '<span class="share_help"><li data-i18n-html="html.help_share_help" class="recipient"></li></span>' +
-            '<li data-i18n-html="html.help_etc_border" class="recipient"></li>' +
-            '<li data-i18n-html="html.help_etc_slider" class="recipient"></li>' +
-            '</ul>' +
-            '<p><a href="https://github.com/code4nara/Maplat/wiki" target="_blank">Maplat</a>' +
-            ' © 2015- Kohei Otsuka, Code for Nara, RekishiKokudo project</p>' +
-            '</div>' +
-            '</div>' +
 
             '<div id="modal_poi_content">' +
             '<div id="poi_web" class="embed-responsive embed-responsive-60vh">' +
@@ -278,43 +251,6 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
             '<p class="recipient" id="poi_address"></p>' +
             '<p class="recipient" id="poi_desc"></p>' +
             '</div>' +
-            '</div>' +
-
-            '<div id="modal_share_content">' +
-            '<h4 data-i18n="html.share_app_title"></h4><div id="app_toast"></div>' +
-            '<div class="recipient row">' +
-            '<div class="form-group col-xs-4 text-center"><button title="Copy to clipboard" class="share btn btn-light" data="cp_app"><i class="fa fa-clipboard"></i>&nbsp;<small data-i18n="html.share_copy"></small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Twitter" class="share btn btn-light" data="tw_app"><i class="fa fa-twitter"></i>&nbsp;<small>Twitter</small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Facebook" class="share btn btn-light" data="fb_app"><i class="fa fa-facebook"></i>&nbsp;<small>Facebook</small></button></div></div>' +
-            '<div id="qr_app" class="center-block" style="width:128px;"></div>' +
-            '<div id="modal_share_state">' +
-            '<h4 data-i18n="html.share_state_title"></h4><div id="view_toast"></div>' +
-            '<div class="recipient row">' +
-            '<div class="form-group col-xs-4 text-center"><button title="Copy to clipboard" class="share btn btn-light" data="cp_view"><i class="fa fa-clipboard"></i>&nbsp;<small data-i18n="html.share_copy"></small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Twitter" class="share btn btn-light" data="tw_view"><i class="fa fa-twitter"></i>&nbsp;<small>Twitter</small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Facebook" class="share btn btn-light" data="fb_view"><i class="fa fa-facebook"></i>&nbsp;<small>Facebook</small></button></div></div>' +
-            '<div id="qr_view" class="center-block" style="width:128px;"></div>' +
-            '</div>' +
-            '<p><img src="" height="0px" width="0px"></p>' +
-            '</div>' +
-
-            '<div id="modal_map_content">' +
-
-            ol.source.META_KEYS.map(function(key) {
-                if (key == 'title' || key == 'officialTitle') return '';
-
-                return '<div class="recipients" id="' + key + '_div"><dl class="dl-horizontal">' +
-                    '<dt data-i18n="html.' + key + '"></dt>' +
-                    '<dd id="' + key + '"></dd>' +
-                    '</dl></div>';
-            }).join('') +
-
-            '<div class="recipients" id="modal_cache_content"><dl class="dl-horizontal">' +
-            '<dt data-i18n="html.cache_handle"></dt>' +
-            '<dd><span id="cache_size"></span>' +
-            '<a id="cache_delete" class="btn btn-default pull-right" href="#" data-i18n="html.cache_delete"></a></dd>' +
-            '</dl></div>' +
-
             '</div>' +
 
             '<div id="modal_load_content">' +
@@ -332,67 +268,6 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
             '</div>');
         for (var i=newElems.length - 1; i >= 0; i--) {
             ui.core.mapDivDocument.insertBefore(newElems[i], ui.core.mapDivDocument.firstChild);
-        }
-
-        var shareBtns = ui.core.mapDivDocument.querySelectorAll('.btn.share');
-        for (var i=0; i<shareBtns.length; i++) {
-            var shareBtn = shareBtns[i];
-            shareBtn.addEventListener('click', function(evt) {
-                var btn = evt.target;
-                if (!btn.classList.contains('share')) btn = btn.parentElement;
-                var cmd = btn.getAttribute('data');
-                var cmds = cmd.split('_');
-                var base = evt.target.baseURI;
-                var div1 = base.split('#!');
-                var path = div1.length > 1 ? (div1[1].split('?'))[0] : '';
-                var div2 = div1[0].split('?');
-                var uri = div2[0];
-                var query = div2.length > 1 ? div2[1].split('&').filter(function(qs) {
-                    return (qs == 'pwa') ? false : true;
-                }).join('&') : '';
-
-                if (query) uri = uri + '?' + query;
-                if (cmds[1] == 'view') {
-                    if (path) uri = uri + '#!' + path;
-                }
-                if (cmds[0] == 'cp') {
-                    var copyFrom = document.createElement('textarea');
-                    copyFrom.textContent = uri;
-
-                    var bodyElm = document.querySelector('body');
-                    bodyElm.appendChild(copyFrom);
-
-                    if (/iP(hone|(o|a)d)/.test(navigator.userAgent)) {
-                        var range = document.createRange();
-                        range.selectNode(copyFrom);
-                        window.getSelection().addRange(range);
-                    } else {
-                        copyFrom.select();
-                    }
-
-                    document.execCommand('copy');
-                    bodyElm.removeChild(copyFrom);
-                    var toastParent = '#' + cmds[1] + '_toast';
-                    iziToast.show(
-                        {
-                            message: ui.t('app.copy_toast', {ns: 'translation'}),
-                            close: false,
-                            pauseOnHover: false,
-                            timeout: 1000,
-                            progressBar: false,
-                            target: toastParent
-                        }
-                    );
-                } else if (cmds[0] == 'tw') {
-                    var twuri = 'https://twitter.com/share?url=' + encodeURIComponent(uri) + '&hashtags=Maplat';
-                    window.open(twuri, '_blank', 'width=650,height=450,menubar=no,toolbar=no,scrollbars=yes');
-                } else if (cmds[0] == 'fb') {
-                    // https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2Fshare-button%2F&display=popup&ref=plugin&src=like&kid_directed_site=0&app_id=113869198637480
-                    var fburi = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(uri) +
-                        '&display=popup&ref=plugin&src=like&kid_directed_site=0';
-                    window.open(fburi, '_blank', 'width=650,height=450,menubar=no,toolbar=no,scrollbars=yes');
-                }
-            });
         }
 
         // PWA対応: 非同期処理
@@ -480,7 +355,7 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                 });
             });
 
-            i18nPromise.then(function(result){
+            i18nPromise.then(function(result) {
                 ui.i18n = result[1];
                 ui.t = result[0];
 
@@ -522,6 +397,29 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
 
                         modalSetting('map');
                         modal.show();
+                    },
+                    initializer: function() {
+                        var newElems = Core.createElement('<div id="modal_map_content">' +
+
+                        ol.source.META_KEYS.map(function(key) {
+                            if (key == 'title' || key == 'officialTitle') return '';
+
+                            return '<div class="recipients" id="' + key + '_div"><dl class="dl-horizontal">' +
+                                '<dt data-i18n="html.' + key + '"></dt>' +
+                                '<dd id="' + key + '"></dd>' +
+                                '</dl></div>';
+                        }).join('') +
+
+                        '<div class="recipients" id="modal_cache_content"><dl class="dl-horizontal">' +
+                        '<dt data-i18n="html.cache_handle"></dt>' +
+                        '<dd><span id="cache_size"></span>' +
+                        '<a id="cache_delete" class="btn btn-default pull-right" href="#" data-i18n="html.cache_delete"></a></dd>' +
+                        '</dl></div>' +
+
+                        '</div>', handleDataI18n);
+                        var addRoot = ui.core.mapDivDocument.querySelector('.modal-body');
+
+                        addRoot.insertBefore(newElems[0], addRoot.firstChild);
                     }
                 });
                 // Maplat Help UI preparation
@@ -534,6 +432,38 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                         var modal = new bsn.Modal(modalElm, {'root': ui.core.mapDivDocument});
                         modalSetting('help');
                         modal.show();
+                    },
+                    initializer: function() {
+                        var newElems = Core.createElement('<span id="modal_help_title" data-i18n="html.help_title"></span>' +
+                        '<div id="modal_help_content">' +
+                        '<div id="help_content">' +
+                        '<span data-i18n-html="html.help_using_maplat"></span>' +
+                        '<p class="col-xs-12 help_img"><img src="parts/fullscreen.png"></p>' +
+                        '<h4 data-i18n="html.help_operation_title"></h4>' +
+                        '<p data-i18n-html="html.help_operation_content" class="recipient"></p>' +
+                        '<h4 data-i18n="html.help_selection_title"></h4>' +
+                        '<p data-i18n-html="html.help_selection_content" class="recipient"></p>' +
+                        '<h4 data-i18n="html.help_gps_title"></h4>' +
+                        '<p data-i18n-html="html.help_gps_content" class="recipient"></p>' +
+                        '<h4 data-i18n="html.help_poi_title"></h4>' +
+                        '<p data-i18n-html="html.help_poi_content" class="recipient"></p>' +
+                        '<h4 data-i18n="html.help_etc_title"></h4>' +
+                        '<ul>' +
+                        '<li data-i18n-html="html.help_etc_attr" class="recipient"></li>' +
+                        '<li data-i18n-html="html.help_etc_help" class="recipient"></li>' +
+                        '<span class="share_help"><li data-i18n-html="html.help_share_help" class="recipient"></li></span>' +
+                        '<li data-i18n-html="html.help_etc_border" class="recipient"></li>' +
+                        '<li data-i18n-html="html.help_etc_slider" class="recipient"></li>' +
+                        '</ul>' +
+                        '<p><a href="https://github.com/code4nara/Maplat/wiki" target="_blank">Maplat</a>' +
+                        ' © 2015- Kohei Otsuka, Code for Nara, RekishiKokudo project</p>' +
+                        '</div>' +
+                        '</div>', handleDataI18n);
+                        var titleRoot = ui.core.mapDivDocument.querySelector('.modal-title');
+                        var contentRoot = ui.core.mapDivDocument.querySelector('.modal-body');
+
+                        titleRoot.insertBefore(newElems[0], titleRoot.firstChild);
+                        contentRoot.insertBefore(newElems[1], contentRoot.firstChild);
                     }
                 });
                 // Share UI preparation
@@ -588,10 +518,96 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'i18n', 'i18nx
                             }
 
                             modal.show();
+                        },
+                        initializer: function() {
+                            var newElems = Core.createElement('<span id="modal_share_title" data-i18n="html.share_title"></span>' +
+                                '<div id="modal_share_content">' +
+                                '<h4 data-i18n="html.share_app_title"></h4><div id="app_toast"></div>' +
+                                '<div class="recipient row">' +
+                                '<div class="form-group col-xs-4 text-center"><button title="Copy to clipboard" class="share btn btn-light" data="cp_app"><i class="fa fa-clipboard"></i>&nbsp;<small data-i18n="html.share_copy"></small></button></div>' +
+                                '<div class="form-group col-xs-4 text-center"><button title="Twitter" class="share btn btn-light" data="tw_app"><i class="fa fa-twitter"></i>&nbsp;<small>Twitter</small></button></div>' +
+                                '<div class="form-group col-xs-4 text-center"><button title="Facebook" class="share btn btn-light" data="fb_app"><i class="fa fa-facebook"></i>&nbsp;<small>Facebook</small></button></div></div>' +
+                                '<div id="qr_app" class="center-block" style="width:128px;"></div>' +
+                                '<div id="modal_share_state">' +
+                                '<h4 data-i18n="html.share_state_title"></h4><div id="view_toast"></div>' +
+                                '<div class="recipient row">' +
+                                '<div class="form-group col-xs-4 text-center"><button title="Copy to clipboard" class="share btn btn-light" data="cp_view"><i class="fa fa-clipboard"></i>&nbsp;<small data-i18n="html.share_copy"></small></button></div>' +
+                                '<div class="form-group col-xs-4 text-center"><button title="Twitter" class="share btn btn-light" data="tw_view"><i class="fa fa-twitter"></i>&nbsp;<small>Twitter</small></button></div>' +
+                                '<div class="form-group col-xs-4 text-center"><button title="Facebook" class="share btn btn-light" data="fb_view"><i class="fa fa-facebook"></i>&nbsp;<small>Facebook</small></button></div></div>' +
+                                '<div id="qr_view" class="center-block" style="width:128px;"></div>' +
+                                '</div>' +
+                                '<p><img src="" height="0px" width="0px"></p>' +
+                                '</div>', handleDataI18n);
+                            var titleRoot = ui.core.mapDivDocument.querySelector('.modal-title');
+                            var contentRoot = ui.core.mapDivDocument.querySelector('.modal-body');
+
+                            titleRoot.insertBefore(newElems[0], titleRoot.firstChild);
+                            contentRoot.insertBefore(newElems[1], contentRoot.firstChild);
+
+                            var shareBtns = ui.core.mapDivDocument.querySelectorAll('.btn.share');
+                            for (var i=0; i<shareBtns.length; i++) {
+                                var shareBtn = shareBtns[i];
+                                shareBtn.addEventListener('click', function(evt) {
+                                    var btn = evt.target;
+                                    if (!btn.classList.contains('share')) btn = btn.parentElement;
+                                    var cmd = btn.getAttribute('data');
+                                    var cmds = cmd.split('_');
+                                    var base = evt.target.baseURI;
+                                    var div1 = base.split('#!');
+                                    var path = div1.length > 1 ? (div1[1].split('?'))[0] : '';
+                                    var div2 = div1[0].split('?');
+                                    var uri = div2[0];
+                                    var query = div2.length > 1 ? div2[1].split('&').filter(function(qs) {
+                                        return (qs == 'pwa') ? false : true;
+                                    }).join('&') : '';
+
+                                    if (query) uri = uri + '?' + query;
+                                    if (cmds[1] == 'view') {
+                                        if (path) uri = uri + '#!' + path;
+                                    }
+                                    if (cmds[0] == 'cp') {
+                                        var copyFrom = document.createElement('textarea');
+                                        copyFrom.textContent = uri;
+
+                                        var bodyElm = document.querySelector('body');
+                                        bodyElm.appendChild(copyFrom);
+
+                                        if (/iP(hone|(o|a)d)/.test(navigator.userAgent)) {
+                                            var range = document.createRange();
+                                            range.selectNode(copyFrom);
+                                            window.getSelection().addRange(range);
+                                        } else {
+                                            copyFrom.select();
+                                        }
+
+                                        document.execCommand('copy');
+                                        bodyElm.removeChild(copyFrom);
+                                        var toastParent = '#' + cmds[1] + '_toast';
+                                        iziToast.show(
+                                            {
+                                                message: ui.t('app.copy_toast', {ns: 'translation'}),
+                                                close: false,
+                                                pauseOnHover: false,
+                                                timeout: 1000,
+                                                progressBar: false,
+                                                target: toastParent
+                                            }
+                                        );
+                                    } else if (cmds[0] == 'tw') {
+                                        var twuri = 'https://twitter.com/share?url=' + encodeURIComponent(uri) + '&hashtags=Maplat';
+                                        window.open(twuri, '_blank', 'width=650,height=450,menubar=no,toolbar=no,scrollbars=yes');
+                                    } else if (cmds[0] == 'fb') {
+                                        // https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2Fshare-button%2F&display=popup&ref=plugin&src=like&kid_directed_site=0&app_id=113869198637480
+                                        var fburi = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(uri) +
+                                            '&display=popup&ref=plugin&src=like&kid_directed_site=0';
+                                        window.open(fburi, '_blank', 'width=650,height=450,menubar=no,toolbar=no,scrollbars=yes');
+                                    }
+                                });
+                            }
                         }
                     });
                 }
-                // Maplat Help UI preparation
+                // Show Border UI preparation
                 var border = new ol.control.EtcControl({
                     tipLabel: ui.t('control.border', {ns: 'translation'}),
                     fa: 'clone',
