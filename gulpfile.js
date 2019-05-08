@@ -119,19 +119,14 @@ gulp.task('sw_build', function() {
     return wbBuild.generateSW({
         globDirectory: '.',
         globPatterns: [
-            '.',
-            'dist/maplat.js',
-            'dist/maplat.css',
-            'parts/*',
-            'locales/*/*',
-            'fonts/*'
+            '.'
         ],
         swDest: 'service-worker_.js',
         clientsClaim: true,
         skipWaiting: true,
         runtimeCaching: [{
-            urlPattern: /(?:maps\/.+\.json|pwa\/.+|pois\/.+\.json|apps\/.+\.json|tmbs\/.+_menu\.jpg|img\/.+\.(?:png|jpg))$/,
-            handler: 'networkFirst',
+            urlPattern: /(?:dist\/maplat\..+|parts\/.+|locales\/.+|fonts\/.+|maps\/.+\.json|pwa\/.+|pois\/.+\.json|apps\/.+\.json|tmbs\/.+_menu\.jpg|img\/.+\.(?:png|jpg))$/,
+            handler: 'staleWhileRevalidate',
             options: {
                 cacheName: 'resourcesCache',
                 expiration: {
@@ -144,7 +139,7 @@ gulp.task('sw_build', function() {
         return new Promise(function(resolve, reject) {
             gulp.src(['./service-worker_.js'])
                 .pipe(concat('service-worker.js'))
-                .pipe(replace(/self\.__precacheManifest = \[/, "self.__precacheManifest = [\n  {\n    \"url\": \".\",\n    \"revision\": \"" + unixtime + "\"\n  },"))
+                .pipe(replace(/self\.__precacheManifest = \[/, "self.__precacheManifest = [\n  {\n    \"url\": \".\",\n    \"revision\": \"" + unixtime + "\"\n  }"))
                 .on('error', reject)
                 .pipe(gulp.dest('./'))
                 .on('end', resolve);
