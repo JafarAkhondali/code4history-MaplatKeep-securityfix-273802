@@ -6,9 +6,6 @@
     "fake_radius" : 10,
     "home_position" : [135.869796,34.752586],
     "default_zoom" : 17,
-    "zoom_restriction" : true,
-    "min_zoom" : 10,
-    "max_zoom" : 15,
     "start_from" : "Kyoto_Kamomap",
     "sources" : [
         {
