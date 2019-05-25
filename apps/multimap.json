@@ -4,7 +4,9 @@
     "fake_gps" : true,
     "fake_center" : "加茂",
     "fake_radius" : 10,
-    "home_position" : [135.869796,34.752586],
+    "home_positionno" : [135.869796,34.752586],
+    "home_position2" : [135.874216, 34.718620],
+    "home_position" : [135.840281, 34.713749],
     "default_zoom" : 17,
     "start_from" : "Kyoto_Kamomap",
     "sources" : [
