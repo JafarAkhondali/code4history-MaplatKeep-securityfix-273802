@@ -1,4 +1,8 @@
 define(['ol3', 'turf'], function(ol, turf) {
+    ol.inherits = function(child, parent) {
+        child.prototype = Object.create(parent.prototype);
+        child.prototype.constructor = child;
+    };
     // 透明PNG定義
     ol.transPng = 'data:image/png;base64,'+
         'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAMAAABrrFhUAAAAB3RJTUUH3QgIBToaSbAjlwAAABd0'+

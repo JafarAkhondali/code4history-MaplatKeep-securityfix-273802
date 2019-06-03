@@ -583,7 +583,7 @@ define(['histmap', 'i18n', 'i18nxhr'], function(ol, i18n, i18nxhr) {
 
     MaplatApp.createElement = createElement;
     MaplatApp.customEvent = CustomEvent;
-    ol.inherits(MaplatApp, ol.events.EventTarget);
+    ol.inherits(MaplatApp, ol.events.Target);
 
     var createMapInfo = function(source) {
         if (!source) return;
