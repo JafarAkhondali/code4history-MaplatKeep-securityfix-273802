@@ -256,7 +256,7 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'page', 'iziTo
             });
         }
 
-        var newElems2 = [
+        var newElems = [
             re.el('div.modal.modalBase',
                 {
                     'tabindex': '-1',
@@ -290,7 +290,7 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'page', 'iziTo
                                 re.el('span.modal_load_title',{'data-i18n': 'html.acquiring_gps'}),
                                 re.el('span.modal_help_title',{'data-i18n': 'html.help_title'}),
                                 re.el('span.modal_share_title',{'data-i18n': 'html.share_title'}),
-                                re.el('span.modal_hide_marker_title',{'data-i18n': 'html.hide_marker_title'}),
+                                re.el('span.modal_hide_marker_title',{'data-i18n': 'html.hide_marker_title'})
                             )
                         ),
                         re.el('div.modal-body',
@@ -331,126 +331,159 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'page', 'iziTo
                                     )
                                 )
                             ),
-
+                            re.el('div.modal_poi_content',
+                                re.el('div.poi_web.embed-responsive.embed-responsive-60vh',
+                                    re.el('iframe.poi_iframe.iframe_poi',
+                                        {
+                                            'frameborder': '0',
+                                            'src': ''
+                                        }
+                                    )
+                                ),
+                                re.el('div.poi_data.hide',
+                                    re.el('p.col-xs-12.poi_img',
+                                        re.el('img.poi_img_tag', {'src': 'parts/loading_image.png'})
+                                    ),
+                                    re.el('p.recipient.poi_address'),
+                                    re.el('p.recipient.poi_desc')
+                                )
+                            ),
+                            re.el('div.modal_share_content',
+                                re.el('h4', {'data-i18n': 'html.share_app_title'}),
+                                re.el('div#___maplat_app_toast_' + ui.html_id_seed),
+                                re.el('div.recipient.row',
+                                    re.el('div.form-group.col-xs-4.text-center',
+                                        re.el('button.share.btn.btn-light',
+                                            {
+                                                'title': 'Copy to clipboard',
+                                                'data': 'cp_app'
+                                            },
+                                            re.el('i.fa.fa-clipboard'), '&nbsp;',
+                                            re.el('small', {'data-i18n': 'html.share_copy'})
+                                        )
+                                    ),
+                                    re.el('div.form-group.col-xs-4.text-center',
+                                        re.el('button.share.btn.btn-light',
+                                            {
+                                                'title': 'Twitter',
+                                                'data': 'tw_app'
+                                            },
+                                            re.el('i.fa.fa-twitter'), '&nbsp;',
+                                            re.el('small', 'Twitter')
+                                        )
+                                    ),
+                                    re.el('div.form-group.col-xs-4.text-center',
+                                        re.el('button.share.btn.btn-light',
+                                            {
+                                                'title': 'Facebook',
+                                                'data': 'fb_app'
+                                            },
+                                            re.el('i.fa.fa-facebook'), '&nbsp;',
+                                            re.el('small', 'Facebook')
+                                        )
+                                    )
+                                ),
+                                re.el('div.qr_app.center-block', {'style': 'width:128px;'}),
+                                re.el('div.modal_share_state',
+                                    re.el('h4', {'data-i18n': 'html.share_state_title'}),
+                                    re.el('div#___maplat_view_toast_' + ui.html_id_seed),
+                                    re.el('div.recipient.row',
+                                        re.el('div.form-group.col-xs-4.text-center',
+                                            re.el('button.share.btn.btn-light',
+                                                {
+                                                    'title': 'Copy to clipboard',
+                                                    'data': 'cp_view'
+                                                },
+                                                re.el('i.fa.fa-clipboard'), '&nbsp;',
+                                                re.el('small', {'data-i18n': 'html.share_copy'})
+                                            )
+                                        ),
+                                        re.el('div.form-group.col-xs-4.text-center',
+                                            re.el('button.share.btn.btn-light',
+                                                {
+                                                    'title': 'Twitter',
+                                                    'data': 'tw_view'
+                                                },
+                                                re.el('i.fa.fa-twitter'), '&nbsp;',
+                                                re.el('small', 'Twitter')
+                                            )
+                                        ),
+                                        re.el('div.form-group.col-xs-4.text-center',
+                                            re.el('button.share.btn.btn-light',
+                                                {
+                                                    'title': 'Facebook',
+                                                    'data': 'fb_view'
+                                                },
+                                                re.el('i.fa.fa-facebook'), '&nbsp;',
+                                                re.el('small', 'Facebook')
+                                            )
+                                        )
+                                    ),
+                                    re.el('div.qr_view.center-block', {'style': 'width:128px;'})
+                                ),
+                                re.el('p',
+                                    re.el('img',
+                                        {
+                                            'src': '',
+                                            'height': '0px',
+                                            'width': '0px'
+                                        }
+                                    )
+                                )
+                            ),
+                            re.el('div.modal_map_content',
+                                ol.source.META_KEYS.reduce(function(prev, key, index, arr) {
+                                    prev.push(re.el('div.recipients.' + key + '_div',
+                                        re.el('dl.dl-horizontal',
+                                            re.el('dt', {'data-i18n': 'html.' + key}),
+                                            re.el('dd.' + key + '_dd')
+                                        )
+                                    ));
+                                    if (index == arr.length -1) {
+                                        prev.push(re.el('div.recipients.modal_cache_content',
+                                            re.el('dl.dl-horizontal',
+                                                re.el('dt', {'data-i18n': 'html.cache_handle'}),
+                                                re.el('dd',
+                                                    re.el('span.cache_size'),
+                                                    re.el('a.cache_delete.btn.btn-default.pull-right',
+                                                        {
+                                                            'href': '#',
+                                                            'data-i18n': 'html.cache_delete'
+                                                        }
+                                                    )
+                                                )
+                                            )
+                                        ));
+                                    }
+                                    return prev;
+                                }, [])
+                            ),
+                            re.el('div.modal_load_content',
+                                re.el('p.recipient',
+                                    re.el('img', {'src': 'parts/loading.png'}),
+                                    re.el('span', {'data-i18n': 'html.app_loading_body'})
+                                ),
+                                re.el('div.splash_div.hide.row',
+                                    re.el('p.col-xs-12.poi_img',
+                                        re.el('img.splash_img', {'src': ''})
+                                    )
+                                ),
+                                re.el('p', re.el('img', {
+                                    'src': '',
+                                    'width': '0px',
+                                    'height': '0px'
+                                }))
+                            ),
+                            re.el('div.modal_hide_marker_content',
+                                re.el('ul.list-group')
+                            ),
+                            re.el('p.modal_gpsD_content.recipient'),
+                            re.el('p.modal_gpsW_content.recipient')
                         )
                     )
                 )
             )
         ];
-        var newElems = Core.createElement('<div class="modal modalBase" tabindex="-1" role="dialog" ' +
-            'aria-labelledby="staticModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" ' +
-            'data-backdrop="static">' +
-            '<div class="modal-dialog">' +
-            '<div class="modal-content">' +
-            '<div class="modal-header">' +
-            '<button type="button" class="close" data-dismiss="modal">' +
-            '<span aria-hidden="true">&#215;</span><span class="sr-only" data-i18n="html.close"></span>' +
-            '</button>' +
-            '<h4 class="modal-title">' +
-
-            '<span class="modal_title"></span>' +
-            '<span class="modal_load_title"></span>' +
-            '<span class="modal_gpsW_title" data-i18n="html.acquiring_gps"></span>' +
-            '<span class="modal_help_title" data-i18n="html.help_title"></span>' +
-            '<span class="modal_share_title" data-i18n="html.share_title"></span>' +
-            '<span class="modal_hide_marker_title" data-i18n="html.hide_marker_title"></span>' +
-
-            '</h4>' +
-            '</div>' +
-            '<div class="modal-body">' +
-
-            '<div class="modal_help_content">' +
-            '<div class="help_content">' +
-            '<span data-i18n-html="html.help_using_maplat"></span>' +
-            '<p class="col-xs-12 help_img"><img src="parts/fullscreen.png"></p>' +
-            '<h4 data-i18n="html.help_operation_title"></h4>' +
-            '<p data-i18n-html="html.help_operation_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_selection_title"></h4>' +
-            '<p data-i18n-html="html.help_selection_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_gps_title"></h4>' +
-            '<p data-i18n-html="html.help_gps_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_poi_title"></h4>' +
-            '<p data-i18n-html="html.help_poi_content" class="recipient"></p>' +
-            '<h4 data-i18n="html.help_etc_title"></h4>' +
-            '<ul>' +
-            '<li data-i18n-html="html.help_etc_attr" class="recipient"></li>' +
-            '<li data-i18n-html="html.help_etc_help" class="recipient"></li>' +
-            '<span class="share_help"><li data-i18n-html="html.help_share_help" class="recipient"></li></span>' +
-            '<li data-i18n-html="html.help_etc_border" class="recipient"></li>' +
-            '<li data-i18n-html="html.help_etc_hide_marker" class="recipient"></li>' +
-            '<li data-i18n-html="html.help_etc_slider" class="recipient"></li>' +
-            '</ul>' +
-            '<p><a href="https://github.com/code4nara/Maplat/wiki" target="_blank">Maplat</a>' +
-            ' © 2015- Kohei Otsuka, Code for Nara, RekishiKokudo project</p>' +
-            '</div>' +
-            '</div>' +
-
-            '<div class="modal_poi_content">' +
-            '<div class="poi_web embed-responsive embed-responsive-60vh">' +
-            '<iframe class="poi_iframe iframe_poi" frameborder="0" src=""></iframe>' +
-            '</div>' +
-            '<div class="poi_data hide">' +
-            '<p class="col-xs-12 poi_img"><img class="poi_img_tag" src="parts/loading_image.png"></p>' +
-            '<p class="recipient poi_address"></p>' +
-            '<p class="recipient poi_desc"></p>' +
-            '</div>' +
-            '</div>' +
-
-            '<div class="modal_share_content">' +
-            '<h4 data-i18n="html.share_app_title"></h4><div id="___maplat_app_toast_' + ui.html_id_seed + '"></div>' +
-            '<div class="recipient row">' +
-            '<div class="form-group col-xs-4 text-center"><button title="Copy to clipboard" class="share btn btn-light" data="cp_app"><i class="fa fa-clipboard"></i>&nbsp;<small data-i18n="html.share_copy"></small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Twitter" class="share btn btn-light" data="tw_app"><i class="fa fa-twitter"></i>&nbsp;<small>Twitter</small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Facebook" class="share btn btn-light" data="fb_app"><i class="fa fa-facebook"></i>&nbsp;<small>Facebook</small></button></div></div>' +
-            '<div class="qr_app center-block" style="width:128px;"></div>' +
-            '<div class="modal_share_state">' +
-            '<h4 data-i18n="html.share_state_title"></h4><div id="___maplat_view_toast_' + ui.html_id_seed + '"></div>' +
-            '<div class="recipient row">' +
-            '<div class="form-group col-xs-4 text-center"><button title="Copy to clipboard" class="share btn btn-light" data="cp_view"><i class="fa fa-clipboard"></i>&nbsp;<small data-i18n="html.share_copy"></small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Twitter" class="share btn btn-light" data="tw_view"><i class="fa fa-twitter"></i>&nbsp;<small>Twitter</small></button></div>' +
-            '<div class="form-group col-xs-4 text-center"><button title="Facebook" class="share btn btn-light" data="fb_view"><i class="fa fa-facebook"></i>&nbsp;<small>Facebook</small></button></div></div>' +
-            '<div class="qr_view center-block" style="width:128px;"></div>' +
-            '</div>' +
-            '<p><img src="" height="0px" width="0px"></p>' +
-            '</div>' +
-
-            '<div class="modal_map_content">' +
-
-            ol.source.META_KEYS.map(function(key) {
-                if (key == 'title' || key == 'officialTitle') return '';
-
-                return '<div class="recipients ' + key + '_div"><dl class="dl-horizontal">' +
-                    '<dt data-i18n="html.' + key + '"></dt>' +
-                    '<dd class="' + key + '_dd"></dd>' +
-                    '</dl></div>';
-            }).join('') +
-
-            '<div class="recipients" class="modal_cache_content"><dl class="dl-horizontal">' +
-            '<dt data-i18n="html.cache_handle"></dt>' +
-            '<dd><span class="cache_size"></span>' +
-            '<a class="cache_delete btn btn-default pull-right" href="#" data-i18n="html.cache_delete"></a></dd>' +
-            '</dl></div>' +
-
-            '</div>' +
-
-            '<div class="modal_load_content">' +
-            '<p class="recipient"><img src="parts/loading.png"><span data-i18n="html.app_loading_body"></span></p>' +
-            '<div class="splash_div hide row"><p class="col-xs-12 poi_img"><img class="splash_img" src=""></p></div>' +
-            '<p><img src="" height="0px" width="0px"></p>' +
-            '</div>' +
-
-            '<div class="modal_hide_marker_content">' +
-            '<ul class="list-group">' +
-            '</ul>' +
-            '</div>' +
-
-            '<p class="modal_gpsD_content" class="recipient"></p>' +
-            '<p class="modal_gpsW_content" class="recipient"></p>' +
-
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>');
         for (var i=newElems.length - 1; i >= 0; i--) {
             ui.core.mapDivDocument.insertBefore(newElems[i], ui.core.mapDivDocument.firstChild);
         }
