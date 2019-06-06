@@ -83,7 +83,8 @@ require.config
         'sprintf': '../lib/sprintf',
         'page': '../lib/page',
         'iziToast': '../lib/iziToast',
-        'qrcode': '../lib/qrcode'
+        'qrcode': '../lib/qrcode',
+        'redom': '../lib/redom.min'
     },
     shim: {
         'i18nxhr': {
@@ -106,6 +107,7 @@ require.config
         }
     }
 })
+
 ;
 
 window.Maplat = {};

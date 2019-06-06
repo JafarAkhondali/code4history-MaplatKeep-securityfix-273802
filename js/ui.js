@@ -1,5 +1,5 @@
-define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'page', 'iziToast', 'qrcode', 'turf'],
-    function(Core, sprintf, Swiper, ol, bsn, page, iziToast, QRCode, turf) {
+define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'page', 'iziToast', 'qrcode', 'turf', 'redom'],
+    function(Core, sprintf, Swiper, ol, bsn, page, iziToast, QRCode, turf, re) {
     var browserLanguage = function() {
         var ua = window.navigator.userAgent.toLowerCase();
         try {
@@ -232,17 +232,19 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'page', 'iziTo
         var pwaWorker = appOption.pwa_worker;
 
         // Add UI HTML Element
-        var newElems = Core.createElement('<div class="ol-control map-title"><span></span></div>' +
-            '<div class="swiper-container ol-control base-swiper prevent-default-ui">' +
-            '<i class="fa fa-chevron-left swiper-left-icon" aria-hidden="true"></i>' +
-            '<i class="fa fa-chevron-right swiper-right-icon" aria-hidden="true"></i>' +
-            '<div class="swiper-wrapper"></div>' +
-            '</div>' +
-            '<div class="swiper-container ol-control overlay-swiper prevent-default-ui">' +
-            '<i class="fa fa-chevron-left swiper-left-icon" aria-hidden="true"></i>' +
-            '<i class="fa fa-chevron-right swiper-right-icon" aria-hidden="true"></i>' +
-            '<div class="swiper-wrapper"></div>' +
-            '</div>');
+        var newElems = [
+            re.el('div.ol-control.map-title', re.el('span')),
+            re.el('div.swiper-container.ol-control.base-swiper.prevent-default-ui',
+                re.el('i.fa.fa-chevron-left.swiper-left-icon', {'aria-hidden': 'true'}),
+                re.el('i.fa.fa-chevron-right.swiper-right-icon', {'aria-hidden': 'true'}),
+                re.el('div.swiper-wrapper')
+            ),
+            re.el('div.swiper-container.ol-control.overlay-swiper.prevent-default-ui',
+                re.el('i.fa.fa-chevron-left.swiper-left-icon', {'aria-hidden': 'true'}),
+                re.el('i.fa.fa-chevron-right.swiper-right-icon', {'aria-hidden': 'true'}),
+                re.el('div.swiper-wrapper')
+            )
+        ];
         for (var i=newElems.length - 1; i >= 0; i--) {
             ui.core.mapDivDocument.insertBefore(newElems[i], ui.core.mapDivDocument.firstChild);
         }
@@ -254,6 +256,87 @@ define(['core', 'sprintf', 'swiper', 'ol-ui-custom', 'bootstrap', 'page', 'iziTo
             });
         }
 
+        var newElems2 = [
+            re.el('div.modal.modalBase',
+                {
+                    'tabindex': '-1',
+                    'role': 'dialog',
+                    'aria-labelledby': 'staticModalLabel',
+                    'aria-hidden': 'true',
+                    'data-show': 'true',
+                    'data-keyboard': 'false',
+                    'data-backdrop': 'static'
+                },
+                re.el('div.modal-dialog',
+                    re.el('div.modal-content',
+                        re.el('div.modal-header',
+                            re.el('button.close',
+                                {
+                                    'type': 'button',
+                                    'data-dismiss': 'modal'
+                                },
+                                re.el('span',
+                                    {'aria-hidden': 'true'},
+                                    '&#215;'
+                                ),
+                                re.el('span.sr-only',
+                                    {
+                                        'data-i18n': 'html.close'
+                                    }
+                                )
+                            ),
+                            re.el('h4.modal-title',
+                                re.el('span.modal_title'),
+                                re.el('span.modal_load_title',{'data-i18n': 'html.acquiring_gps'}),
+                                re.el('span.modal_help_title',{'data-i18n': 'html.help_title'}),
+                                re.el('span.modal_share_title',{'data-i18n': 'html.share_title'}),
+                                re.el('span.modal_hide_marker_title',{'data-i18n': 'html.hide_marker_title'}),
+                            )
+                        ),
+                        re.el('div.modal-body',
+                            re.el('div.modal_help_content',
+                                re.el('div.help_content',
+                                    re.el('span', {'data-i18n-html': 'html.help_using_maplat'}),
+                                    re.el('p.col-xs-12.help_img',
+                                        re.el('img', {src: 'parts/fullscreen.png'})
+                                    ),
+                                    re.el('h4', {'data-i18n': 'html.help_operation_title'}),
+                                    re.el('p.recipient', {'data-i18n-html': 'html.help_operation_content'}),
+                                    re.el('h4', {'data-i18n': 'html.help_selection_title'}),
+                                    re.el('p.recipient', {'data-i18n-html': 'html.help_selection_content'}),
+                                    re.el('h4', {'data-i18n': 'html.help_gps_title'}),
+                                    re.el('p.recipient', {'data-i18n-html': 'html.help_gps_content'}),
+                                    re.el('h4', {'data-i18n': 'html.help_poi_title'}),
+                                    re.el('p.recipient', {'data-i18n-html': 'html.help_poi_content'}),
+                                    re.el('h4', {'data-i18n': 'html.help_etc_title'}),
+                                    re.el('ul',
+                                        re.el('li.recipient', {'data-i18n-html': 'html.help_etc_attr'}),
+                                        re.el('li.recipient', {'data-i18n-html': 'html.help_etc_help'}),
+                                        re.el('span.share_help',
+                                            re.el('li.recipient', {'data-i18n-html': 'html.help_share_help'})
+                                        ),
+                                        re.el('li.recipient', {'data-i18n-html': 'html.help_etc_border'}),
+                                        re.el('li.recipient', {'data-i18n-html': 'html.help_etc_hide_marker'}),
+                                        re.el('li.recipient', {'data-i18n-html': 'html.help_etc_slider'})
+                                    ),
+                                    re.el('p',
+                                        re.el('a',
+                                            {
+                                                'href': 'https://github.com/code4nara/Maplat/wiki',
+                                                'target': '_blank'
+                                            },
+                                            'Maplat'
+                                        ),
+                                        ' © 2015- Kohei Otsuka, Code for Nara, RekishiKokudo project'
+                                    )
+                                )
+                            ),
+
+                        )
+                    )
+                )
+            )
+        ];
         var newElems = Core.createElement('<div class="modal modalBase" tabindex="-1" role="dialog" ' +
             'aria-labelledby="staticModalLabel" aria-hidden="true" data-show="true" data-keyboard="false" ' +
             'data-backdrop="static">' +
