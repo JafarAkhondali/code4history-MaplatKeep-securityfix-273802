@@ -25,12 +25,14 @@
 </body>
 <script>
     var option = {
-        enable_cache: true,
-        restore_session: false,
-        state_url: false,
-        enable_share: true,
+        enableCache: true,
+        enableHideMarker: false,
+        enableBorder: false,
+        restoreSession: false,
+        stateUrl: true,
+        enableShare: true,
         presentation_mode: true,
-        pwa_manifest: true,
+        pwaManifest: true,
         mapboxgl: mapboxgl,
         mapboxToken: 'YOUR-ACCESS-TOKEN',
         control: {
@@ -38,8 +40,18 @@
             compass: "parts/compass.png",
             gps: "parts/gps.png",
             zoom_plus: "parts/plus.png",
-            zoom_minus: "parts/minus.png"
-        }
+            zoom_minus: "parts/minus.png",
+            border: "parts/border.png",
+            attr: "parts/attr.png",
+            help: "parts/help.png",
+            hide_marker: "parts/hide_marker.png",
+            share: "parts/share.png",
+            slider_in_help: "parts/slider.png",
+            favicon: "parts/favicon.png",
+            slider_color: "#92c7dc"
+        },
+        icon: "parts/defaultpin.png",
+        selectedIcon: "parts/defaultpin_selected.png"
     };
     var hashes = (window.location.href.split('#!'))[0];
     hashes = hashes.slice(window.location.href.indexOf('?') + 1).split('&');
