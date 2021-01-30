@@ -32,7 +32,14 @@
         presentation_mode: true,
         pwa_manifest: true,
         mapboxgl: mapboxgl,
-        mapboxToken: 'YOUR-ACCESS-TOKEN'
+        mapboxToken: 'YOUR-ACCESS-TOKEN',
+        control: {
+            home: "parts/home.png",
+            compass: "parts/compass.png",
+            gps: "parts/gps.png",
+            zoom_plus: "parts/plus.png",
+            zoom_minus: "parts/minus.png"
+        }
     };
     var hashes = (window.location.href.split('#!'))[0];
     hashes = hashes.slice(window.location.href.indexOf('?') + 1).split('&');
