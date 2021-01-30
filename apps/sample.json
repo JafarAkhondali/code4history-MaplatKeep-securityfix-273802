@@ -16,6 +16,9 @@
     "min_zoom" : 10,
     "max_zoom" : 15,
     "start_from" : "morioka_ndl2",
+    "control": {
+        "home": "parts/home.png"
+    },
     "sources" : [
         {
             "label" : "1644 (TMS)",
