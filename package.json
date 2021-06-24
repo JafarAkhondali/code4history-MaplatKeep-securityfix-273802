@@ -52,7 +52,7 @@
     "ol": "^6.5.0",
     "ol-contextmenu": "^4.1.0",
     "ol5": "npm:ol@^5.3.3",
-    "swiper": "^5.3.1",
+    "swiper": "^6.7.1",
     "swiper4": "npm:swiper@^4.5.1",
     "weiwudi": "^0.1.4"
   },

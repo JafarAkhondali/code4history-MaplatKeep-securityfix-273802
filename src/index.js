@@ -684,6 +684,7 @@ export class MaplatUi extends EventTarget {
       }
 
       const baseSwiper = (ui.baseSwiper = new Swiper(".base-swiper", {
+        passiveListeners: false,
         slidesPerView: 2,
         spaceBetween: 15,
         breakpoints: {
@@ -702,7 +703,8 @@ export class MaplatUi extends EventTarget {
         }
       }));
       baseSwiper.on("click", e => {
-        e.preventDefault();
+        console.log(e);
+        //e.preventDefault();
         if (!baseSwiper.clickedSlide) return;
         const slide = baseSwiper.clickedSlide;
         ui.core.changeMap(slide.getAttribute("data"));
@@ -717,6 +719,7 @@ export class MaplatUi extends EventTarget {
           .classList.add("single-map");
       }
       const overlaySwiper = (ui.overlaySwiper = new Swiper(".overlay-swiper", {
+        passiveListeners: false,
         slidesPerView: 2,
         spaceBetween: 15,
         breakpoints: {
@@ -735,7 +738,8 @@ export class MaplatUi extends EventTarget {
         }
       }));
       overlaySwiper.on("click", e => {
-        e.preventDefault();
+        console.log(e);
+        //e.preventDefault();
         if (!overlaySwiper.clickedSlide) return;
         const slide = overlaySwiper.clickedSlide;
         ui.core.changeMap(slide.getAttribute("data"));
@@ -1476,6 +1480,7 @@ enable-background="new 0 0 10 10" xml:space="preserve">
           swiperDiv.classList.remove("hide");
           if (!this.poiSwiper) {
             this.poiSwiper = new Swiper(".swiper-container.poi_img_swiper", {
+              passiveListeners: false,
               lazy: true,
               pagination: {
                 el: ".swiper-pagination",
